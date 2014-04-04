@@ -1,0 +1,29 @@
+<!--
+File : child-datagen.Rmd
+Desc : a child document simulating some data 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+# Generating some data 
+We will simulate some meaningless data to have some values to plot and
+represent in tables. The code to simulate the data is shown below:
+
+```{r ex2_simdata, echo = TRUE, results = "hide"}
+set.seed(42) # for reproducibility
+## simulated values of two genes for samples from different batches
+gene1_b1 <- sort(abs(rnorm(30, mean = 2, sd = 1)))
+gene1_b1_groups <- rep(c("control", "case"), times = c(11, 19))
+gene1_b2 <- sort(abs(rnorm(20, mean = 4, sd = 0.5)))
+gene1_b2_groups <- rep(c("control", "case"), times = c(12, 8))
+
+## put the simulated data in a data frame
+orig_df <-
+    data.frame(by = as.factor(rep(c("batch 1", "batch 2"), 
+                                  times = c(30, 20))),
+               vals = c(gene1_b1, gene1_b2),
+               cat = as.factor(c(gene1_b1_groups, gene1_b2_groups)))
+``` 

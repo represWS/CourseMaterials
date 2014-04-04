@@ -1,0 +1,224 @@
+%% File : latex_template_caching.Rnw
+%%
+%% Desc : LaTeX template featuring chunk option "cache = TRUE"
+%% Auth : Sarah Gerster
+%% Date : 19 Mar 2014 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% THE SOURCE OF THIS DOCUMENT IS *.Rnw 
+%%% DO NOT EDIT THE *.tex or .R FILES !!!
+
+\documentclass[a4paper,11pt,oneside]{article}
+
+%% Change to adapt title/heading information
+\def \myTitle {Illustrate \knitr chunk option ``cache = TRUE''} 
+\def \myShortTitle {reproducible research workshop}
+\def \myAuthorInfo {\textsf{Sarah Gerster
+    (}\texttt{sarah.gerster@isb-sib.ch}\textsf{)}\\\textsf{Fr\'ed\'eric Sch\"utz
+    (}\texttt{frederic.schutz@isb-sib.ch}\textsf{)}\\\textsf{Bioinformatics
+    Core Facility}\\\textsf{SIB Swiss Institute of
+    Bioinformatics}\\\textsf{Lausanne, Switzerland}} 
+
+\def \myDate{March 19, 2014}
+\date{\myDate}
+
+%% Change to add/remove LaTeX packages
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb, amsfonts, mathrsfs}
+\usepackage[mathscr]{eucal}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{rotfloat}
+\newcommand{\subfloat}[2][need a sub-caption]{\subcaptionbox{#1}{#2}}
+
+%% Change the line spacing
+\renewcommand{\baselinestretch}{1}
+%% Change the margins
+\usepackage[margin=1in]{geometry}
+
+%% Set headers and footers for report
+\let\footruleskip\relax
+\usepackage{fancyhdr}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+%\pagestyle{ruled}
+\fancyhead[C]{\begin{minipage}[c][7mm][c]{10mm}\includegraphics[width=\linewidth]{sib_logo.pdf}\\[0.2ex]\end{minipage}}
+\fancyhead[L]{\textsf{Bioinformatics Core Facility\\Swiss Institute of Bioinformatics}}
+\fancyhead[R]{\textsf{\myShortTitle\\\myDate}}
+\fancyfoot{}
+\fancyfoot[L]{\textsf{Technical Report BCF-SIB}}
+\fancyfoot[R]{\textsf{\thepage}}
+\pagestyle{fancyplain}
+
+%% Define new commands
+\newcommand*{\Rp}{\textsf{R}$\;$}% R program
+\newcommand*{\knitr}{\textbf{\textsl{knitr}$\;$}}% R program
+\newsavebox\ltmcbox
+
+%% Set default R options
+<<repadd1_setup, include = FALSE>>=
+require(knitr)
+opts_chunk$set(fig.path = "figures/", fig.align = "center",
+               fig.show = "hold", tidy = FALSE, echo = FALSE)
+options(width = 78)
+@ 
+
+<<settings, echo = FALSE, results = "hide">>=
+## ################ ##
+## GENERAL SETTINGS ##
+## ################ ##
+### version of R objects savec in files
+version <- "2014-03-19"
+### working directory
+setwd(".")
+### where to save figures 
+plotdir <- "figures/"
+@ 
+
+\graphicspath{{\Sexpr{plotdir}}}
+\DeclareGraphicsExtensions{.pdf,.eps,.png}
+\DeclareGraphicsRule{*}{pdf}{*}{}
+
+<<setup, results = "hide", message = FALSE, warning = FALSE>>=
+## ########################### ##
+## LOAD PACKAGES, SOURCE CODES ##
+## ########################### ##
+require(ggplot2)
+require(xtable)
+
+sanitizeUnderscoreSexpr <- function(str) {
+    gsub('_', '\\\\\\\\_', str);
+}
+sanitizeUnderscores <- function(text) {
+  return(gsub("_", "\\\\_", text))
+}
+@ 
+
+%% %%%%%%%%%%%%%%%%%%%%% %%
+%% Begin actual document %%
+%% %%%%%%%%%%%%%%%%%%%%% %%
+\begin{document}
+\title{\myTitle}
+\author{\myAuthorInfo}
+\maketitle
+
+\section{Caching a chunk that takes too long to be executed each time}
+We want the result of a chunk which takes quite some time to execute. So ideally, we only want to compute it once, and then just recall the saved output when re-compiling the report. We define a code chunk called ``simple\_cache'' to illustrate this:
+
+<<simple_cache, cache = TRUE, echo = TRUE>>=
+## some silly code which takes long to execute
+for (i in 1:10) {
+  cat("Processing loop", i, "of 10\n")
+  Sys.sleep(2) 
+}
+cat("Done processing long code\n")
+@
+
+This was simple enough, because the chunk does not depend on any other chunk nor on external data. As long as we do not modify anything in the chunk called ``simple\_cache'', it will not be reprocessed when the document is compiled. The stored objects created in this chunk are (lazy-)loaded from previously saved files.
+
+\section{Caching with dependence on other code chunks}
+Let us first set the seed for the random number generator in a chunk called ``set\_seed'':
+
+<<set_seed, echo = TRUE, cache = TRUE>>=
+## set a random seed
+set.seed(17) 
+@
+
+Now we define a chunk called ``rng\_cache\_1'' to simulate some data from a standard normal distribution and display the first few lines of the generated matrix:
+
+\begin{center}
+<<rng_cache_1, cache = TRUE, echo = TRUE, results = "asis">>=
+## generate a matrix with random numbers
+x <- matrix(rnorm(500), ncol = 5)
+## time consuming part
+Sys.sleep(10) 
+## what we want to display as output
+print(xtable(head(x)), floating = FALSE)
+@
+\end{center}
+
+We now define a chunk called ``dep\_cache\_mod'' that modifies the matrix \texttt{x}:
+<<dep_cache_mod, cache = TRUE, echo = TRUE, results = "hide">>=
+x <- x - 3
+@
+
+We compute the mean of \texttt{x} in a  cached chunk ``dep\_cache\_1'': 
+\begin{center}
+<<dep_cache_1, cache = TRUE, echo = TRUE>>=
+mean(x)
+@
+\end{center}
+
+And then again in a cached chunk that keeps an eye on modifications to the \Rp chunk ``dep\_cache\_mod'':
+<<dep_cache_2, cache = TRUE, echo = TRUE, dependson = "dep_cache_mod">>=
+mean(x)
+@
+
+Why can the values returned by the two chunks be different?
+
+\section{Caching and random number generator seeds}
+Be careful when caching code while using random number generators. The way random seeds are handled (and what you need to take care of ``by hand'') is not straight forward when caching is involved. Check {\small\url{http://yihui.name/knitr/demo/cache/}} for more information. 
+
+We prepare another \Rp chunk called ``rng\_cache\_2'' basically doing the same as ``rng\_cache\_1''. However, this time we include a chunk option to specify that the caching depends on the chunk ``set\_seed''.
+
+\begin{center}
+<<rng_cache_2, cache = TRUE, echo = TRUE, results = "asis", dependson = "set_seed">>=
+## generate a matrix with random numbers
+x <- matrix(rnorm(500), ncol = 5)
+## time consuming part
+Sys.sleep(10) 
+## what we want to display as output
+print(xtable(head(x)), floating = FALSE)
+@
+\end{center}
+
+Why do the values in \texttt{x} not (always) change when the argument in the \texttt{set.seed()} statement is altered in the ``set\_seed'' chunk?
+
+\section{Reprocess cached chunks when the \Rp version or external data changes}
+You can use additional options in the chunk header to track additional changes. For example, you could add an option \texttt{cache.rversion} in your global settings for the chunks to track the current version of \Rp:\\
+\verb~opts_chunk$set(cache.rversion = R.version.string)~\\
+
+In the current setting, \texttt{R.version.string} = \Sexpr{R.version.string}. If the cached chunks were processed with a different version of \Rp, the MD5 digests will be different, and the chunks get re-evaluated.
+
+Working on data loaded from external files is a related issue. The chunk below relies on data stored in a file called \texttt{my\_ext\_data.csv} which I received from a partner.
+
+<<ext_data_cache, echo = TRUE, cache = TRUE>>=
+## load data from external file
+my_ext_data <- read.table(file = "my_ext_data.csv", header = TRUE, sep = ",")
+
+## compute average of each column in loaded matrix
+colMeans(my_ext_data)
+@
+
+Assume your partner sends you a new version of the data file. How could you use and additional chunk option \texttt{cache.extra} to ensure that your cached chunk is re-evaluated when this external data file changes? 
+
+% <<>>=
+% opts_chunk$set(cache.extra = file.info("my_ext_data.csv"))
+% @
+% 
+% <<ext_data_cache_1, echo = TRUE, cache = TRUE>>=
+% ## load data from external file
+% my_ext_data <- read.table(file = "my_ext_data.csv", header = TRUE, sep = ",")
+% 
+% ## compute average of each column in loaded matrix
+% colMeans(my_ext_data)
+% @
+
+<<ext_data_cache_2, echo = TRUE, cache = TRUE, cache.extra = file.info("my_ext_data.csv")$mtime>>=
+## load data from external file
+my_ext_data <- read.table(file = "my_ext_data.csv", header = TRUE, sep = ",")
+
+## compute average of each column in loaded matrix
+colMeans(my_ext_data)
+@
+
+\section{\Rp session information}
+Always include session information in your reports:
+<<rsession, echo = FALSE>>=
+print(sessionInfo(), locale = FALSE)
+@
+
+\end{document}

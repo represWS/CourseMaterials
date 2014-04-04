@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Illustrate usage of child documents in knitr</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Illustrate usage of child documents in knitr</h1>
+
+<h3>Sarah Gerster (<a href="mailto:sarah.gerster@isb-sib.ch">sarah.gerster@isb-sib.ch</a>) and Frédéric Schütz (<a href="mailto:frederic.schutz@isb-sib.ch">frederic.schutz@isb-sib.ch</a>)</h3>
+
+<h3>Bioinformatics Core Facility, SIB Swiss Institute of Bioinformatics, Lausanne, Switzerland</h3>
+
+<h3>March 20, 2014</h3>
+
+<!--% Thu Apr  3 22:20:07 2014-->
+
+<!--
+File : markdown_template_child-docs.Rmd
+Desc : illustrate usage of child documents in knitr 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<!-- Setting up R -->
+
+<h1>What are child documents?</h1>
+
+<p>Child documents are sub-files written in the same format (in our case markdown) as the main document, which should be included in the main document when compiling the report. Refer to <a href="http://yihui.name/knitr/demo/child/">http://yihui.name/knitr/demo/child/</a> for additional information.</p>
+
+<p>In this example, we want to keep this main document brief. It should only contain this introduction, the skeleton of the rest of the file (including the child documents), the information about the R session and an appendix. Please explore all input files to see how calls to child documents can be nested.</p>
+
+<!-- include child document in which data is generated -->
+
+<!--
+File : child-datagen.Rmd
+Desc : a child document simulating some data 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h1>Generating some data</h1>
+
+<p>We will simulate some meaningless data to have some values to plot and
+represent in tables. The code to simulate the data is shown below:</p>
+
+<pre><code class="r">set.seed(42)  # for reproducibility
+## simulated values of two genes for samples from different batches
+gene1_b1 &lt;- sort(abs(rnorm(30, mean = 2, sd = 1)))
+gene1_b1_groups &lt;- rep(c(&quot;control&quot;, &quot;case&quot;), times = c(11, 19))
+gene1_b2 &lt;- sort(abs(rnorm(20, mean = 4, sd = 0.5)))
+gene1_b2_groups &lt;- rep(c(&quot;control&quot;, &quot;case&quot;), times = c(12, 8))
+
+## put the simulated data in a data frame
+orig_df &lt;- data.frame(by = as.factor(rep(c(&quot;batch 1&quot;, &quot;batch 2&quot;), times = c(30, 
+    20))), vals = c(gene1_b1, gene1_b2), cat = as.factor(c(gene1_b1_groups, 
+    gene1_b2_groups)))
+</code></pre>
+
+<!-- include child document in which data is plotted -->
+
+<!--
+File : child-dataplot.Rmd
+Desc : a child document to visualize the data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h1>Plotting the data</h1>
+
+<p>Assume the data actually corresponds to measured intensities for a specific gene extracted from a larger gene expression data set. The samples were processed in two batches. We call a customized plotting function to get a first idea of what the data look like (code not shown in the report).</p>
+
+<pre><code class="r">my_R_function(df = orig_df, y_lab = &quot;log2(expression)&quot;, title = &quot;original data&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt=""/> </p>
+
+<p>There seems to be a batch effect which we would like to remove.</p>
+
+<!-- include child document in which data is plotted -->
+
+<!--
+File : child-batchrem.Rmd
+Desc : a child document to remove the batch effect and plot resulting data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h2>Batch effect removal with a simple z-transform:</h2>
+
+<pre><code class="r">norm_df &lt;- data.frame(by = as.factor(rep(c(&quot;batch 1&quot;, &quot;batch 2&quot;), times = c(30, 
+    20))), vals = c(scale(gene1_b1), scale(gene1_b2)), cat = as.factor(c(gene1_b1_groups, 
+    gene1_b2_groups)))
+</code></pre>
+
+<p>To see the effect of our batch effect removal step, we want to plot
+both, the original and the corrected data next to each other (code not
+shown in the report):</p>
+
+<pre><code class="r">## plot original data
+plot1 &lt;- my_R_function(df = orig_df, y_lab = &quot;log2(intensity)&quot;, y_lim = c(-2.5, 
+    5), title = &quot;original data&quot;)
+## plot modified data
+plot2 &lt;- my_R_function(df = norm_df, y_lab = &quot;adjusted log2(intensity)&quot;, y_lim = c(-2.5, 
+    5), title = &quot;adjusted data&quot;)
+grid.arrange(plot1, plot2, ncol = 2)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt=""/> </p>
+
+<h1>Information about the R session</h1>
+
+<p>Don&#39;t forget to include information about the R session
+(version of R and used packages) in which the current report was
+generated:</p>
+
+<pre><code>## R version 3.0.2 (2013-09-25)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## 
+## attached base packages:
+## [1] grid      stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
+## 
+## other attached packages:
+## [1] xtable_1.7-1    gridExtra_0.9.1 ggplot2_0.9.3.1 knitr_1.5      
+## 
+## loaded via a namespace (and not attached):
+##  [1] MASS_7.3-29        RColorBrewer_1.0-5 colorspace_1.2-4  
+##  [4] dichromat_2.0-0    digest_0.6.3       evaluate_0.5.1    
+##  [7] formatR_0.10       gtable_0.1.2       labeling_0.2      
+## [10] munsell_0.4.2      plyr_1.8           proto_0.3-10      
+## [13] reshape2_1.2.2     scales_0.2.3       stringr_0.6.2     
+## [16] tools_3.0.2
+</code></pre>
+
+<h1>APPENDIX: How to generate a .docx file from this R markdown document?</h1>
+
+<p>Knit the .Rmd file to produce an .md file. Then, in a shell, run</p>
+
+<pre><code>    $ pandoc markdown_template_child-docs.md -o report-via-pandoc.docx
+</code></pre>
+
+<p>By the way, you could also use pandoc to generate a standalone HTML file with numbered sections:</p>
+
+<pre><code>    $ pandoc -Ns markdown_template_child-docs.md -o report-via-pandoc.html
+</code></pre>
+
+<p>If you want some sections to be unnumbered, for example the title, authors, affilitation and date in this document, just add <code>{-}</code> at the end of the corresponding lines.</p>
+
+<p>If you are interested in working with markdown, we strongly encourage you to convert the files &ldquo;manually&rdquo; from .md to your final format via pandoc. It is much more flexible than the in-built tools in R.</p>
+
+</body>
+
+</html>
+

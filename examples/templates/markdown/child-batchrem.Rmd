@@ -1,0 +1,31 @@
+<!--
+File : child-batchrem.Rmd
+Desc : a child document to remove the batch effect and plot resulting data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+## Batch effect removal with a simple z-transform:
+```{r ex2_ztransf, echo = TRUE, results = "hide"}
+norm_df <-
+    data.frame(by = as.factor(rep(c("batch 1", "batch 2"), 
+                                  times = c(30, 20))),
+               vals = c(scale(gene1_b1), scale(gene1_b2)),
+               cat = as.factor(c(gene1_b1_groups, gene1_b2_groups)))
+``` 
+
+To see the effect of our batch effect removal step, we want to plot
+both, the original and the corrected data next to each other (code not
+shown in the report):
+```{r ex2_plot2, fig.height = 3, fig.width = 6, fig.show = "asis"}
+## plot original data
+plot1 <- my_R_function(df = orig_df, y_lab = "log2(intensity)", 
+                       y_lim = c(-2.5, 5),  title = "original data")
+## plot modified data
+plot2 <- my_R_function(df = norm_df, y_lab = "adjusted log2(intensity)", 
+                       y_lim = c(-2.5, 5),  title = "adjusted data")
+grid.arrange(plot1, plot2, ncol=2)   
+``` 

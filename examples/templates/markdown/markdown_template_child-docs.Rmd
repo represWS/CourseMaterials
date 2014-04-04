@@ -1,0 +1,70 @@
+Illustrate usage of child documents in knitr
+=======================================================
+### Sarah Gerster (sarah.gerster@isb-sib.ch) and Frédéric Schütz (frederic.schutz@isb-sib.ch)
+### Bioinformatics Core Facility, SIB Swiss Institute of Bioinformatics, Lausanne, Switzerland
+### March 20, 2014
+<!--% `r date()`-->
+
+<!--
+File : markdown_template_child-docs.Rmd
+Desc : illustrate usage of child documents in knitr 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+ 
+<!-- Setting up R -->
+```{r setup, echo = FALSE, results = "hide", message = FALSE, warning = FALSE} 
+## ##### ##
+## KNITR ##
+## ##### ##
+opts_chunk$set(tidy = TRUE, fig.width = 4, fig.height = 4, fig.cap = "", 
+               cache = FALSE, echo = TRUE)
+options(keep.blank.line = TRUE, width.cutoff = 60, keep.source = TRUE)
+
+## ########################### ##
+## LOAD PACKAGES, SOURCE CODES ##
+## ########################### ##
+require(ggplot2)
+require(gridExtra)
+require(xtable)
+source("my_R_function.R")
+```
+
+# What are child documents?
+Child documents are sub-files written in the same format (in our case markdown) as the main document, which should be included in the main document when compiling the report. Refer to http://yihui.name/knitr/demo/child/ for additional information.
+
+In this example, we want to keep this main document brief. It should only contain this introduction, the skeleton of the rest of the file (including the child documents), the information about the R session and an appendix. Please explore all input files to see how calls to child documents can be nested.
+
+<!-- include child document in which data is generated -->
+```{r get_child_datagen, child = "child-datagen.Rmd"}
+```
+
+<!-- include child document in which data is plotted -->
+```{r get_child_dataplot, child = "child-dataplot.Rmd"}
+```
+
+# Information about the R session
+Don't forget to include information about the R session
+(version of R and used packages) in which the current report was
+generated:
+
+```{r ex2_rsession, echo = FALSE}
+print(sessionInfo(), locale = FALSE)
+``` 
+
+# APPENDIX: How to generate a .docx file from this R markdown document?
+Knit the .Rmd file to produce an .md file. Then, in a shell, run
+
+        $ pandoc markdown_template_child-docs.md -o report-via-pandoc.docx
+        
+By the way, you could also use pandoc to generate a standalone HTML file with numbered sections:
+
+        $ pandoc -Ns markdown_template_child-docs.md -o report-via-pandoc.html
+
+If you want some sections to be unnumbered, for example the title, authors, affilitation and date in this document, just add ` {-}` at the end of the corresponding lines.
+
+If you are interested in working with markdown, we strongly encourage you to convert the files "manually" from .md to your final format via pandoc. It is much more flexible than the in-built tools in R.

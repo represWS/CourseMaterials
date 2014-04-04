@@ -1,0 +1,26 @@
+\documentclass{article}
+\begin{document}
+\title{Simple report based on Rnw file}
+\author{The Author}
+\maketitle
+
+<<setup, include=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/roxygen-')
+@
+
+<<echo = FALSE>>=
+set.seed(42) 
+@
+
+simulate x and y vector 
+<<>>=
+x <- rnorm(100)
+y <- rnorm(100, mean = 2, sd = 2)
+@
+
+plot the result
+<<fig.width = 5, fig.height = 4>>=
+plot(x, y, col = floor(abs(x) + 1))
+@
+\end{document}

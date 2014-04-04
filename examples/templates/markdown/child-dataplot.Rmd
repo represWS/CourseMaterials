@@ -1,0 +1,26 @@
+<!--
+File : child-dataplot.Rmd
+Desc : a child document to visualize the data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+# Plotting the data 
+Assume the data actually corresponds to measured intensities for a specific gene extracted from a larger gene expression data set. The samples were processed in two batches. We call a customized plotting function to get a first idea of what the data look like (code not shown in the report).
+
+```{r ex2_plot1, fig.height = 4, fig.show = "asis"}
+my_R_function(df = orig_df, y_lab = "log2(expression)", 
+              title = "original data")
+``` 
+
+
+There seems to be a batch effect which we would like to remove.
+
+
+<!-- include child document in which data is plotted -->
+```{r get_child_batchrem, child = "child-batchrem.Rmd"}
+```
+

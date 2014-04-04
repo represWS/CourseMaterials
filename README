@@ -1,0 +1,8 @@
+Materials for the SIB Reproducible Research Course -- April 4, 2014
+-------------------------------------------------------------------
+
+examples/sewing/: 
+  sample files used for the first execise in the knitr session
+
+examples/templates/: 
+  template files used for the second execise in the knitr session

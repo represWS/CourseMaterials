@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h1 id="illustrate-usage-of-child-documents-in-knitr"><span class="header-section-number">1</span> Illustrate usage of child documents in knitr</h1>
+<h3 id="sarah-gerster-sarah.gersterisb-sib.ch-and-frédéric-schütz-frederic.schutzisb-sib.ch"><span class="header-section-number">1.0.1</span> Sarah Gerster (sarah.gerster@isb-sib.ch) and Frédéric Schütz (frederic.schutz@isb-sib.ch)</h3>
+<h3 id="bioinformatics-core-facility-sib-swiss-institute-of-bioinformatics-lausanne-switzerland"><span class="header-section-number">1.0.2</span> Bioinformatics Core Facility, SIB Swiss Institute of Bioinformatics, Lausanne, Switzerland</h3>
+<h3 id="march-20-2014"><span class="header-section-number">1.0.3</span> March 20, 2014</h3>
+<!--% Thu Mar 20 19:00:13 2014-->
+
+<!--
+File : markdown_template_child-docs.Rmd
+Desc : illustrate usage of child documents in knitr 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+
+<!-- Setting up R -->
+
+
+
+<h1 id="what-are-child-documents"><span class="header-section-number">2</span> What are child documents?</h1>
+<p>Child documents are sub-files written in the same format (in our case markdown) as the main document, which should be included in the main document when compiling the report. Refer to http://yihui.name/knitr/demo/child/ for additional information.</p>
+<p>In this example, we want to keep this main document brief. It should only contain this introduction, the skeleton of the rest of the file (including the child documents), the information about the R session and an appendix. Please explore all input files to see how calls to child documents can be nested.</p>
+<!-- include child document in which data is generated -->
+
+<!--
+File : child-datagen.Rmd
+Desc : a child document simulating some data 
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h1 id="generating-some-data"><span class="header-section-number">3</span> Generating some data</h1>
+<p>We will simulate some meaningless data to have some values to plot and represent in tables. The code to simulate the data is shown below:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">42</span>)  <span class="co"># for reproducibility</span>
+## simulated values of two genes for samples from different batches
+gene1_b1 &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">abs</span>(<span class="kw">rnorm</span>(<span class="dv">30</span>, <span class="dt">mean =</span> <span class="dv">2</span>, <span class="dt">sd =</span> <span class="dv">1</span>)))
+gene1_b1_groups &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;control&quot;</span>, <span class="st">&quot;case&quot;</span>), <span class="dt">times =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="dv">19</span>))
+gene1_b2 &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">abs</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>, <span class="dt">mean =</span> <span class="dv">4</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>)))
+gene1_b2_groups &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;control&quot;</span>, <span class="st">&quot;case&quot;</span>), <span class="dt">times =</span> <span class="kw">c</span>(<span class="dv">12</span>, <span class="dv">8</span>))
+
+## put the simulated data in a data frame
+orig_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">by =</span> <span class="kw">as.factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;batch 1&quot;</span>, <span class="st">&quot;batch 2&quot;</span>), <span class="dt">times =</span> <span class="kw">c</span>(<span class="dv">30</span>, 
+    <span class="dv">20</span>))), <span class="dt">vals =</span> <span class="kw">c</span>(gene1_b1, gene1_b2), <span class="dt">cat =</span> <span class="kw">as.factor</span>(<span class="kw">c</span>(gene1_b1_groups, 
+    gene1_b2_groups)))</code></pre>
+<!-- include child document in which data is plotted -->
+
+<!--
+File : child-dataplot.Rmd
+Desc : a child document to visualize the data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h1 id="plotting-the-data"><span class="header-section-number">4</span> Plotting the data</h1>
+<p>Assume the data actually corresponds to measured intensities for a specific gene extracted from a larger gene expression data set. The samples were processed in two batches. We call a customized plotting function to get a first idea of what the data look like (code not shown in the report).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">my_R_function</span>(<span class="dt">df =</span> orig_df, <span class="dt">y_lab =</span> <span class="st">&quot;log2(expression)&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;original data&quot;</span>)</code></pre>
+<div class="figure">
+<img src="figure/ex2_plot1.png" />
+</div>
+<p>There seems to be a batch effect which we would like to remove.</p>
+<!-- include child document in which data is plotted -->
+
+<!--
+File : child-batchrem.Rmd
+Desc : a child document to remove the batch effect and plot resulting data
+Auth : Sarah Gerster
+Date : 20 Mar 2014
+
+THE SOURCE OF THIS DOCUMENT IS *.Rmd
+DO NOT EDIT THE *.md, *.html, *.doc, *.pdf, *.R, ... FILES !!!
+-->
+
+<h2 id="batch-effect-removal-with-a-simple-z-transform"><span class="header-section-number">4.1</span> Batch effect removal with a simple z-transform:</h2>
+<pre class="sourceCode r"><code class="sourceCode r">norm_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">by =</span> <span class="kw">as.factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;batch 1&quot;</span>, <span class="st">&quot;batch 2&quot;</span>), <span class="dt">times =</span> <span class="kw">c</span>(<span class="dv">30</span>, 
+    <span class="dv">20</span>))), <span class="dt">vals =</span> <span class="kw">c</span>(<span class="kw">scale</span>(gene1_b1), <span class="kw">scale</span>(gene1_b2)), <span class="dt">cat =</span> <span class="kw">as.factor</span>(<span class="kw">c</span>(gene1_b1_groups, 
+    gene1_b2_groups)))</code></pre>
+<p>To see the effect of our batch effect removal step, we want to plot both, the original and the corrected data next to each other (code not shown in the report):</p>
+<pre class="sourceCode r"><code class="sourceCode r">## plot original data
+plot1 &lt;-<span class="st"> </span><span class="kw">my_R_function</span>(<span class="dt">df =</span> orig_df, <span class="dt">y_lab =</span> <span class="st">&quot;log2(intensity)&quot;</span>, <span class="dt">y_lim =</span> <span class="kw">c</span>(-<span class="fl">2.5</span>, 
+    <span class="dv">5</span>), <span class="dt">title =</span> <span class="st">&quot;original data&quot;</span>)
+## plot modified data
+plot2 &lt;-<span class="st"> </span><span class="kw">my_R_function</span>(<span class="dt">df =</span> norm_df, <span class="dt">y_lab =</span> <span class="st">&quot;adjusted log2(intensity)&quot;</span>, <span class="dt">y_lim =</span> <span class="kw">c</span>(-<span class="fl">2.5</span>, 
+    <span class="dv">5</span>), <span class="dt">title =</span> <span class="st">&quot;adjusted data&quot;</span>)
+<span class="kw">grid.arrange</span>(plot1, plot2, <span class="dt">ncol =</span> <span class="dv">2</span>)</code></pre>
+<div class="figure">
+<img src="figure/ex2_plot2.png" />
+</div>
+<h1 id="information-about-the-r-session"><span class="header-section-number">5</span> Information about the R session</h1>
+<p>Don't forget to include information about the R session (version of R and used packages) in which the current report was generated:</p>
+<pre><code>## R version 3.0.2 (2013-09-25)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## 
+## attached base packages:
+## [1] grid      stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
+## 
+## other attached packages:
+## [1] xtable_1.7-1    gridExtra_0.9.1 ggplot2_0.9.3.1 knitr_1.5      
+## 
+## loaded via a namespace (and not attached):
+##  [1] MASS_7.3-29        RColorBrewer_1.0-5 colorspace_1.2-4  
+##  [4] dichromat_2.0-0    digest_0.6.3       evaluate_0.5.1    
+##  [7] formatR_0.10       gtable_0.1.2       labeling_0.2      
+## [10] munsell_0.4.2      plyr_1.8           proto_0.3-10      
+## [13] reshape2_1.2.2     scales_0.2.3       stringr_0.6.2     
+## [16] tools_3.0.2</code></pre>
+<h1 id="appendix-how-to-generate-a-.docx-file-from-this-r-markdown-document"><span class="header-section-number">6</span> APPENDIX: How to generate a .docx file from this R markdown document?</h1>
+<p>Knit the .Rmd file to produce an .md file. Then, in a shell, run</p>
+<pre><code>    $ pandoc markdown_template_child-docs.md -o report-via-pandoc.docx
+    </code></pre>
+<p>By the way, you could also use pandoc to generate a standalone HTML file with numbered sections:</p>
+<pre><code>    $ pandoc -Ns markdown_template_child-docs.md -o report-via-pandoc.html</code></pre>
+<p>If you want some sections to be unnumbered, for example the title, authors, affilitation and date in this document, just add <code>{-}</code> at the end of the corresponding lines.</p>
+<p>If you are interested in working with markdown, we strongly encourage you to convert the files &quot;manually&quot; from .md to your final format via pandoc. It is much more flexible than the in-built tools in R.</p>
+</body>
+</html>

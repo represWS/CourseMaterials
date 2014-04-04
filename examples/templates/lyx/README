@@ -1,0 +1,12 @@
+lyx_template_externalization.lyx (main file)
+--> used to illustrate how code externalization works in knitr
+--> can be used as template to create PDF reports with knitr and LyX
+
+figures/
+--> directory with generated figures
+
+extern.R
+--> main R code with special comments to identify chunks
+
+sib_logo.pdf
+--> used to generate PDF report
